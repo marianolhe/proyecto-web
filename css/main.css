@@ -1,3 +1,6 @@
+.hidden {
+  display: none;
+
 /* Variables */
 :root {
   --color-primary: #4f46e5;
