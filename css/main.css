@@ -1,0 +1,31 @@
+/* Variables */
+:root {
+  --color-primary: #4f46e5;
+  --color-secondary: #6366f1;
+  --color-bg: #f9fafb;
+  --color-text: #111827;
+  --color-gray: #6b7280;
+
+  --radius: 12px;
+  --transition: 0.3s ease;
+}
+
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* BODY */
+body {
+  font-family: Arial, sans-serif;
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+/* Utilidad */
+.hidden {
+  display: none;
+}
+
