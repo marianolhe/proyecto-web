@@ -94,7 +94,5 @@ function setupFormularioEditar(book){
     }); 
 }
 
-export { init, setUpBookFormularioCrear, setupFormularioEditar };
-
 init();
 setUpBookFormularioCrear();
