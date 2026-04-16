@@ -1,5 +1,5 @@
 import { validateBook } from "./validation.js";
-import { createBook, getAllBooks, updateBook, searchBooksbyGenre, searchBooksbyAuthor, searchBooksbyTitle} from "./api.js";
+import { createBook, getAllBooks, getBookById, updateBook, searchBooksbyGenre, searchBooksbyAuthor, searchBooksbyTitle} from "./api.js";
 import { formularioLibro, renderBookList, renderSkeleton} from "./ui.js";
 
 
@@ -8,14 +8,16 @@ async function init() {
     try {
         const books = await getAllBooks();
         renderBookList(books);
+        setupVerDetalle();
     } catch (error) {
         console.error("Error al cargar los libros:", error);
         const contenedor = document.getElementById("view-listado");
         const errorElement = document.createElement("p");
         errorElement.textContent = "Ocurrió un error al cargar los libros.";
         contenedor.innerHTML = "";
-        contenedor.appendChild(errorElement);  }
+        contenedor.appendChild(errorElement);  
     }
+}
 
 function setUpBookFormularioCrear(){
     const contenedor = document.getElementById("view-crear");
@@ -115,6 +117,7 @@ function setupSearchBooks(){
                 contenedor.appendChild(errorElement);
             } else {
                 renderBookList(books);
+                setupVerDetalle();
             }
         })
         .catch(error => {
@@ -133,6 +136,7 @@ function setupSearchBooks(){
                 contenedor.appendChild(errorElement);
             } else {
                 renderBookList(books);
+                setupVerDetalle();
             }  
         })
         .catch(error => {
@@ -151,6 +155,7 @@ function setupSearchBooks(){
                 contenedor.appendChild(errorElement);
             } else {
                 renderBookList(books);
+                setupVerDetalle();
             }
         })
         .catch(error => {
@@ -163,6 +168,21 @@ function setupSearchBooks(){
     });
 }
 
+function setupVerDetalle() {
+    const contenedor = document.getElementById("view-listado");
+    contenedor.addEventListener("click", async function(event) {
+        const boton = event.target.closest("button[data-id]");
+        if (!boton) return;
+ 
+        const id = boton.dataset.id;
+        try {
+            const book = await getBookById(id);
+            renderBookDetail(book);
+        } catch (error) {
+            console.error("Error al cargar el detalle del libro:", error);
+        }
+    });
+}
     
 
 init();

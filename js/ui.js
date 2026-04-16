@@ -1,3 +1,5 @@
+import { showView } from "./router.js";
+
 function renderBookCard(book){
         let tarjeta = document.createElement("div");
         tarjeta.classList.add("tarjeta");
@@ -10,16 +12,28 @@ function renderBookCard(book){
         autorl.textContent = "Autor: " + book.author;
         tarjeta.appendChild(autorl);
 
-        let genero = document.createElement("p");
-        genero.textContent = "Género: " + book.genre;
-        tarjeta.appendChild(genero);
+        let badgeGenero = document.createElement("span");
+        badgeGenero.classList.add("badge-genero");
+        badgeGenero.textContent = book.genre;
+        body.appendChild(badgeGenero);
+
+        let rating = document.createElement("p");
+        rating.classList.add("rating");
+        rating.textContent = "⭐ " + book.rating + " / 5";
+        body.appendChild(rating);
 
         let imagen = document.createElement("img");
         imagen.src = book.cover;
+        imagen.alt = book.title;
         tarjeta.appendChild(imagen);
+
+        let body = document.createElement("div");
+        body.classList.add("tarjeta-body");
+        tarjeta.appendChild(body);
 
         let boton = document.createElement("button");
         boton.textContent = "Ver detalles";
+        boton.classList.add("btn-primario");
         boton.dataset.id = book.id;
         tarjeta.appendChild(boton);
 
@@ -36,6 +50,7 @@ function renderBookList(books){
         }
     )
 }
+
 
 function renderSkeleton(){
     const contenedor = document.getElementById("view-listado");
@@ -125,6 +140,86 @@ function formularioLibro() {
     form.appendChild(submitButton);
 
     return form;
+}
+
+function renderBookDetail(book) {
+    const contenedor = document.getElementById("view-detalle");
+    contenedor.innerHTML = "";
+ 
+    // Encabezado
+    let header = document.createElement("div");
+    header.classList.add("detalle-header");
+    contenedor.appendChild(header);
+ 
+    let imagen = document.createElement("img");
+    imagen.src = book.cover;
+    imagen.alt = book.title;
+    imagen.classList.add("detalle-cover");
+    header.appendChild(imagen);
+ 
+    let info = document.createElement("div");
+    info.classList.add("detalle-info");
+    header.appendChild(info);
+ 
+    let titulo = document.createElement("h1");
+    titulo.classList.add("detalle-titulo");
+    titulo.textContent = book.title;
+    info.appendChild(titulo);
+ 
+    let autor = document.createElement("p");
+    autor.classList.add("detalle-autor");
+    autor.textContent = book.author;
+    info.appendChild(autor);
+ 
+    let meta = document.createElement("div");
+    meta.classList.add("detalle-meta");
+    info.appendChild(meta);
+ 
+    let badgeGenero = document.createElement("span");
+    badgeGenero.classList.add("badge-genero");
+    badgeGenero.textContent = book.genre;
+    meta.appendChild(badgeGenero);
+ 
+    let anio = document.createElement("span");
+    anio.textContent = "📅 " + book.year;
+    meta.appendChild(anio);
+ 
+    let rating = document.createElement("span");
+    rating.textContent = "⭐ " + book.rating + " / 5";
+    meta.appendChild(rating);
+ 
+    // Descripción
+    let descripcion = document.createElement("p");
+    descripcion.classList.add("detalle-descripcion");
+    descripcion.textContent = book.description;
+    info.appendChild(descripcion);
+ 
+    // Botones de acción 
+    let acciones = document.createElement("div");
+    acciones.classList.add("detalle-acciones");
+    contenedor.appendChild(acciones);
+ 
+    let btnVolver = document.createElement("button");
+    btnVolver.textContent = "← Volver";
+    btnVolver.classList.add("btn-secundario");
+    btnVolver.addEventListener("click", function() {
+        showView("listado");
+    });
+    acciones.appendChild(btnVolver);
+ 
+    let btnEditar = document.createElement("button");
+    btnEditar.textContent = "Editar";
+    btnEditar.classList.add("btn-secundario");
+    btnEditar.dataset.id = book.id;
+    acciones.appendChild(btnEditar);
+ 
+    let btnEliminar = document.createElement("button");
+    btnEliminar.textContent = "Eliminar";
+    btnEliminar.classList.add("btn-peligro");
+    btnEliminar.dataset.id = book.id;
+    acciones.appendChild(btnEliminar);
+ 
+    showView("detalle");
 }
 
 export { renderBookCard, renderBookList, renderSkeleton, formularioLibro };
