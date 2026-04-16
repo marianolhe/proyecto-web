@@ -55,7 +55,7 @@ async function deleteBook(id){
     )
 }
 
-async function searchBooks(query) {
+async function searchBooksbyTitle(query) {
     const response = await fetch(BASEURL + "books?title=" + encodeURIComponent(query));
     if (!response.ok) {
         throw new Error("Error searching books: " + response.status);
@@ -64,4 +64,22 @@ async function searchBooks(query) {
     return results;
 }
 
-export { getAllBooks, getBookById, createBook, updateBook, deleteBook, searchBooks };
+async function searchBooksbyAuthor(query) {
+    const response = await fetch(BASEURL + "books?author=" + encodeURIComponent(query));
+    if (!response.ok) {
+        throw new Error("Error searching books: " + response.status);
+    }
+    const results = await response.json();
+    return results;
+}
+
+async function searchBooksbyGenre(query) {
+    const response = await fetch(BASEURL + "books?genre=" + encodeURIComponent(query));
+    if (!response.ok) {
+        throw new Error("Error searching books: " + response.status);
+    }
+    const results = await response.json();
+    return results;
+}
+
+export { getAllBooks, getBookById, createBook, updateBook, deleteBook, searchBooksbyTitle, searchBooksbyAuthor, searchBooksbyGenre };
