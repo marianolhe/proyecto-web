@@ -12,6 +12,10 @@ function renderBookCard(book){
         autorl.textContent = "Autor: " + book.author;
         tarjeta.appendChild(autorl);
 
+        let body = document.createElement("div");
+        body.classList.add("tarjeta-body");
+        tarjeta.appendChild(body);
+
         let badgeGenero = document.createElement("span");
         badgeGenero.classList.add("badge-genero");
         badgeGenero.textContent = book.genre;
@@ -26,10 +30,6 @@ function renderBookCard(book){
         imagen.src = book.cover;
         imagen.alt = book.title;
         tarjeta.appendChild(imagen);
-
-        let body = document.createElement("div");
-        body.classList.add("tarjeta-body");
-        tarjeta.appendChild(body);
 
         let boton = document.createElement("button");
         boton.textContent = "Ver detalles";
@@ -222,4 +222,4 @@ function renderBookDetail(book) {
     showView("detalle");
 }
 
-export { renderBookCard, renderBookList, renderSkeleton, formularioLibro };
+export { renderBookCard, renderBookList, renderSkeleton, formularioLibro, renderBookDetail};
