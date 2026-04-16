@@ -118,8 +118,11 @@ function setupSearchBooks(){
             }
         })
         .catch(error => {
-            console.error("Error al buscar libros:", error);
-        });
+            contenedor.innerHTML = "";
+            const errorElement = document.createElement("p");
+            errorElement.textContent = "No se encontraron libros.";
+            contenedor.appendChild(errorElement);
+});
         } else if (selectedOption === "author") {
             searchBooksbyAuthor(query)
             .then(books => {
@@ -133,7 +136,10 @@ function setupSearchBooks(){
             }  
         })
         .catch(error => {
-            console.error("Error al buscar libros:", error);
+            contenedor.innerHTML = "";
+            const errorElement = document.createElement("p");
+            errorElement.textContent = "No se encontraron libros.";
+            contenedor.appendChild(errorElement);
         });         
         } else if (selectedOption === "genre") {
             searchBooksbyGenre(query)
@@ -148,7 +154,10 @@ function setupSearchBooks(){
             }
         })
         .catch(error => {
-            console.error("Error al buscar libros:", error);
+            contenedor.innerHTML = "";
+            const errorElement = document.createElement("p");
+            errorElement.textContent = "No se encontraron libros.";
+            contenedor.appendChild(errorElement);
         }); 
         }
     });

@@ -82,4 +82,37 @@ async function searchBooksbyGenre(query) {
     return results;
 }
 
-export { getAllBooks, getBookById, createBook, updateBook, deleteBook, searchBooksbyTitle, searchBooksbyAuthor, searchBooksbyGenre };
+
+async function getFavorites() {
+    const response = await fetch (BASEURL + "favorites");
+    if (!response.ok) {
+        throw new Error("Error fetching favorites: " + response.status);
+    }
+    const favorites = await response.json();
+    return favorites;
+}
+
+async function addFavorite(bookId) {
+    const response = await fetch(BASEURL + "favorites", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ bookId })
+    });
+    if (!response.ok) {
+        throw new Error("Error adding favorite: " + response.status);
+    }
+    const newFavorite = await response.json();
+    return newFavorite;
+}
+
+async function removeFavorite(favoriteId) {
+    const response = await fetch(BASEURL + "favorites/" + favoriteId, {
+        method: "DELETE"
+    });
+    if (!response.ok) {
+        throw new Error("Error removing favorite: " + response.status);
+    }
+    return await response.json();
+}   
+
+export { getAllBooks, getBookById, createBook, updateBook, deleteBook, searchBooksbyTitle, searchBooksbyAuthor, searchBooksbyGenre, getFavorites, addFavorite, removeFavorite };
