@@ -95,29 +95,10 @@ function setupFormularioEditar(book){
 }
 
 function setupSearchBooks(){
-    const input = document.createElement("input");
-    input.type = "text";
-    input.placeholder = "Buscar...";
+    
     const contenedor = document.getElementById("view-listado");
-    contenedor.appendChild(input);
-
-    const select = document.createElement("select");
-    const optionTitle = document.createElement("option");
-    optionTitle.value = "title";
-    optionTitle.textContent = "Título";
-    select.appendChild(optionTitle);
-
-    const optionAuthor = document.createElement("option");
-    optionAuthor.value = "author";
-    optionAuthor.textContent = "Autor";
-    select.appendChild(optionAuthor);
-
-    const optionGenre = document.createElement("option");
-    optionGenre.value = "genre";
-    optionGenre.textContent = "Género";
-    select.appendChild(optionGenre);
-
-    contenedor.appendChild(select);
+    const input = document.getElementById("search-input");
+    const select = document.getElementById("search-filter");
 
     input.addEventListener("input", function(){
         const query = input.value;
@@ -177,3 +158,4 @@ function setupSearchBooks(){
 
 init();
 setUpBookFormularioCrear();
+setupSearchBooks();
