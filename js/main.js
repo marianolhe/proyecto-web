@@ -27,6 +27,7 @@ function setUpBookFormularioCrear(){
 
     form.addEventListener("submit", function(event){
         event.preventDefault();
+        clearErrors();
 
         const title = form.elements["title"].value;
         const author = form.elements["author"].value;
@@ -37,27 +38,33 @@ function setUpBookFormularioCrear(){
         const rating = form.elements["rating"].value;
         
         const bookData = { title, author, genre, description, year, cover, rating };
-
         const result = validateBook(bookData);
+
         if (result.valid) {
             createBook(bookData)
             .then(newBook => {
-                console.log("Libro creado:", newBook);
                 form.reset();
+                showToast("Libro creado correctamente", "exito");
+                showView("listado");
             })
             .catch(error => {
-                console.error("Error al crear el libro:", error);
-                mostrarToast("Error al crear el libro.");
+                showToast("Error al crear el libro. Intentá de nuevo.", "error");
             });
         }else{
-            console.log("Errores de validación:", result.errors);
+            result.errors.forEach(msg => {
+                if (msg.includes("Title")) showError("title", msg);
+                else if (msg.includes("Author")) showError("author", msg);
+                else if (msg.includes("Genre")) showError("genre", msg);
+                else if (msg.includes("Description")) showError("description", msg);
+                else if (msg.includes("Year")) showError("year", msg);
+            });
         }
-
     });
 }
 
 function setupFormularioEditar(book){
     const contenedor = document.getElementById("view-editar");
+    contenedor.innerHTML = "";
     const form = formularioLibro();
     contenedor.appendChild(form);
 
@@ -71,6 +78,7 @@ function setupFormularioEditar(book){
 
     form.addEventListener("submit", function(event){
         event.preventDefault();
+        clearErrors();
 
         const title = form.elements["title"].value;
         const author = form.elements["author"].value;
@@ -86,18 +94,52 @@ function setupFormularioEditar(book){
         if (result.valid) {
             updateBook(book.id, bookData)
             .then(updatedBook => {
-                console.log("Libro actualizado:", updatedBook);
-                mostrarToast("Libro actualizado correctamente.");
+                showToast("Libro actualizado correctamente", "exito");
+                showView("listado")
             })
             .catch(error => {
-                console.error("Error al actualizar el libro:", error);
-                mostrarToast("Error al actualizar el libro.");  
+                showToast("Error al actualizar el libro. Intentá de nuevo.", "error");
             });
         }else{
-            console.log("Errores de validación:", result.errors);
+            result.errors.forEach(msg => {
+                if (msg.includes("Title")) showError("title", msg);
+                else if (msg.includes("Author")) showError("author", msg);
+                else if (msg.includes("Genre")) showError("genre", msg);
+                else if (msg.includes("Description")) showError("description", msg);
+                else if (msg.includes("Year")) showError("year", msg);
+            });
         }
-
     }); 
+}
+
+function setupEliminar(book) {
+    const btnEliminar = document.querySelector(".btn-peligro[data-id='" + book.id + "']");
+    if (!btnEliminar) return;
+
+    btnEliminar.addEventListener("click", async function () {
+        const confirmar = window.confirm('¿Estás seguro de que querés eliminar "' + book.title + '"?');
+        if (!confirmar) return;
+
+        try {
+            await deleteBook(book.id);
+            const card = document.querySelector("#view-listado .tarjeta button[data-id='" + book.id + "']");
+            if (card) card.closest(".tarjeta").remove();
+            showToast("Libro eliminado correctamente", "exito");
+            showView("listado");
+        } catch (error) {
+            showToast("Error al eliminar el libro. Intentá de nuevo.", "error");
+        }
+    });
+}
+
+function setupBtnEditar(book) {
+    const btnEditar = document.querySelector(".detalle-acciones .btn-secundario[data-id='" + book.id + "']");
+    if (!btnEditar) return;
+
+    btnEditar.addEventListener("click", function () {
+        setupFormularioEditar(book);
+        showView("editar");
+    });
 }
 
 function setupSearchBooks(){
@@ -182,6 +224,8 @@ function setupVerDetalle() {
         try {
             const book = await getBookById(id);
             renderBookDetail(book);
+            setupEliminar(book);
+            setupBtnEditar(book);
         } catch (error) {
             console.error("Error al cargar el detalle del libro:", error);
         }

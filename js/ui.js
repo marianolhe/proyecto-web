@@ -140,6 +140,9 @@ function formularioLibro() {
     let cancelButton = document.createElement("button");
     cancelButton.type = "button";
     cancelButton.textContent = "Cancelar";
+    cancelButton.addEventListener("click", function () {
+        showView("listado");
+    });
     form.appendChild(cancelButton);
 
     let submitButton = document.createElement("button");
@@ -230,16 +233,28 @@ function renderBookDetail(book) {
     showView("detalle");
 }
 
-function mostrarToast(mensaje, tipo = "exito") {
+function showToast(msg, type) {
     const toast = document.createElement("div");
-    toast.textContent = mensaje;
-    toast.classList.add("toast");
-    if (tipo === "error") {
-        toast.classList.add("toast-error");
-    }
+    toast.classList.add("toast", "toast-" + type);
+    toast.textContent = msg;
     document.body.appendChild(toast);
-    setTimeout(function() { toast.remove(); }, 3000);
+    setTimeout(() => toast.remove(), 3000);
 }
 
+function showError(field, msg) {
+    const prev = document.querySelector(".error-msg[data-field='" + field + "']");
+    if (prev) prev.remove();
+    const input = document.querySelector('[name="' + field + '"]');
+    if (!input) return;
+    const span = document.createElement("span");
+    span.classList.add("error-msg");
+    span.dataset.field = field;
+    span.textContent = msg;
+    input.insertAdjacentElement("afterend", span);
+}
 
-export { renderBookCard, renderBookList, renderSkeleton, formularioLibro, renderBookDetail, mostrarToast};
+function clearErrors() {
+    document.querySelectorAll(".error-msg").forEach(el => el.remove());
+}
+
+export { renderBookCard, renderBookList, renderSkeleton, formularioLibro, renderBookDetail, showToast, showError, clearErrors};
