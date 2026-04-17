@@ -1,6 +1,6 @@
 import { showView } from "./router.js";
 
-function renderBookCard(book){
+function renderBookCard(book, mostrarFavorito = true){
         let tarjeta = document.createElement("div");
         tarjeta.classList.add("tarjeta");
 
@@ -36,6 +36,14 @@ function renderBookCard(book){
         boton.classList.add("btn-primario");
         boton.dataset.id = book.id;
         tarjeta.appendChild(boton);
+
+        if(mostrarFavorito) {
+            let botonFav = document.createElement("button");
+            botonFav.textContent = "Agregar a favoritos";
+            botonFav.classList.add("btn-favorito", "btn-secundario");
+            botonFav.dataset.id = book.id;
+            tarjeta.appendChild(botonFav);
+        }
 
         return tarjeta;
     }
