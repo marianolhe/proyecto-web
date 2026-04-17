@@ -9,6 +9,15 @@ async function getAllBooks() {
         return books;
 }
 
+async function getBooksPaged(page, limit) {
+    const response = await fetch(BASEURL + "books?page=" + page + "&limit=" + limit);
+    if (!response.ok) {
+        throw new Error("Error fetching books: " + response.status);
+    }
+    const books = await response.json();
+    return books;
+}
+
 async function getBookById(id) {
         const response = await fetch(BASEURL + "books/" + id);
         if (!response.ok) {
@@ -115,4 +124,4 @@ async function removeFavorite(favoriteId) {
     return await response.json();
 }   
 
-export { getAllBooks, getBookById, createBook, updateBook, deleteBook, searchBooksbyTitle, searchBooksbyAuthor, searchBooksbyGenre, getFavorites, addFavorite, removeFavorite };
+export { getAllBooks, getBooksPaged, getBookById, createBook, updateBook, deleteBook, searchBooksbyTitle, searchBooksbyAuthor, searchBooksbyGenre, getFavorites, addFavorite, removeFavorite };
