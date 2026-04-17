@@ -1,6 +1,6 @@
 import { validateBook } from "./validation.js";
-import { createBook, getAllBooks, getBookById, updateBook, searchBooksbyGenre, searchBooksbyAuthor, searchBooksbyTitle, addFavorite, getFavorites, removeFavorite} from "./api.js";
-import { formularioLibro, renderBookList, renderSkeleton, renderBookDetail, renderBookCard, mostrarToast} from "./ui.js";
+import { createBook, deleteBook, getAllBooks, getBookById, updateBook, searchBooksbyGenre, searchBooksbyAuthor, searchBooksbyTitle, addFavorite, getFavorites, removeFavorite} from "./api.js";
+import { formularioLibro, renderBookList, renderSkeleton, renderBookDetail, renderBookCard, showToast, showError, clearErrors} from "./ui.js";
 import { showView } from "./router.js"; 
 
 
@@ -242,13 +242,13 @@ function setupFavoritos() {
             .then(favs => {
                 const yaExiste = favs.some(fav => fav.bookId === bookId);
                 if (yaExiste) {
-                    mostrarToast("Este libro ya está en favoritos.");
+                    showToast("Este libro ya está en favoritos.");
                 } else {
                     addFavorite(bookId)
-                    .then(() => mostrarToast("Favorito agregado."))
+                    .then(() => showToast("Favorito agregado."))
                     .catch(error => {
                         console.error("Error al agregar favorito:", error);
-                        mostrarToast("Error al agregar favorito.");
+                        showToast("Error al agregar favorito.");
                     });
                 }
             });
@@ -276,12 +276,12 @@ function setupVistaFavoritos(){
             btnEliminar.addEventListener("click", function() {
                 removeFavorite(fav[index].id)
                 .then(() => {
-                    mostrarToast("Favorito eliminado.", "error");
+                    showToast("Favorito eliminado.", "error");
                     tarjeta.remove();
                 })
                 .catch(error => {
                     console.error("Error al eliminar favorito:", error);
-                    mostrarToast("Error al eliminar favorito.");
+                    showToast("Error al eliminar favorito.");
                 });
             });
             tarjeta.appendChild(btnEliminar);
