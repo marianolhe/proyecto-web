@@ -217,7 +217,7 @@ function setupSearchBooks(){
 function setupVerDetalle() {
     const contenedor = document.getElementById("view-listado");
     contenedor.addEventListener("click", async function(event) {
-        const boton = event.target.closest("btn-primario[data-id]");
+        const boton = event.target.closest(".btn-primario[data-id]");
         if (!boton) return;
  
         const id = boton.dataset.id;

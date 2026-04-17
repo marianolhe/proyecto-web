@@ -72,83 +72,59 @@ function renderSkeleton(){
 
 function formularioLibro() {
     let form = document.createElement("form");
-    
-    let titleLabel = document.createElement("label");
-    titleLabel.textContent = "Título:";
-    form.appendChild(titleLabel);
 
-    let titleInput = document.createElement("input");
-    titleInput.type = "text";
-    titleInput.name = "title";
-    form.appendChild(titleInput);
+    const campos = [
+        { label: "Título:", name: "title", type: "input", inputType: "text" },
+        { label: "Autor:", name: "author", type: "input", inputType: "text" },
+        { label: "Género:", name: "genre", type: "input", inputType: "text" },
+        { label: "Descripción:", name: "description", type: "textarea" },
+        { label: "Año:", name: "year", type: "input", inputType: "number" },
+        { label: "URL de la portada:", name: "cover", type: "input", inputType: "text" },
+        { label: "Calificación (1-5):", name: "rating", type: "input", inputType: "number", min: "1", max: "5" },
+    ];
 
-    let authorLabel = document.createElement("label");
-    authorLabel.textContent = "Autor:";
-    form.appendChild(authorLabel);
+    campos.forEach(campo => {
+        let grupo = document.createElement("div");
+        grupo.classList.add("form-grupo");
 
-    let authorInput = document.createElement("input");
-    authorInput.type = "text";
-    authorInput.name = "author";
-    form.appendChild(authorInput);
+        let label = document.createElement("label");
+        label.textContent = campo.label;
+        grupo.appendChild(label);
 
-    let genreLabel = document.createElement("label");
-    genreLabel.textContent = "Género:";
-    form.appendChild(genreLabel);
+        let input;
+        if (campo.type === "textarea") {
+            input = document.createElement("textarea");
+        } else {
+            input = document.createElement("input");
+            input.type = campo.inputType;
+            if (campo.min) input.min = campo.min;
+            if (campo.max) input.max = campo.max;
+        }
+        input.name = campo.name;
+        grupo.appendChild(input);
 
-    let genreInput = document.createElement("input");
-    genreInput.type = "text";
-    genreInput.name = "genre";
-    form.appendChild(genreInput);
+        form.appendChild(grupo);
+    });
 
-    let descriptionLabel = document.createElement("label");
-    descriptionLabel.textContent = "Descripción:";
-    form.appendChild(descriptionLabel);
-
-    let descriptionInput = document.createElement("textarea");
-    descriptionInput.name = "description";
-    form.appendChild(descriptionInput);
-
-    let yearLabel = document.createElement("label");
-    yearLabel.textContent = "Año:";
-    form.appendChild(yearLabel);
-
-    let yearInput = document.createElement("input");
-    yearInput.type = "number";
-    yearInput.name = "year";
-    form.appendChild(yearInput);
-
-    let coverLabel = document.createElement("label");
-    coverLabel.textContent = "URL de la portada:";
-    form.appendChild(coverLabel);
-
-    let coverInput = document.createElement("input");
-    coverInput.type = "text";
-    coverInput.name = "cover";
-    form.appendChild(coverInput);
-
-    let ratingLabel = document.createElement("label");
-    ratingLabel.textContent = "Calificación:";
-    form.appendChild(ratingLabel);
-
-    let ratingInput = document.createElement("input");
-    ratingInput.type = "number";
-    ratingInput.name = "rating";
-    ratingInput.min = "1";
-    ratingInput.max = "5";
-    form.appendChild(ratingInput);
+    let acciones = document.createElement("div");
+    acciones.classList.add("form-acciones");
 
     let cancelButton = document.createElement("button");
     cancelButton.type = "button";
     cancelButton.textContent = "Cancelar";
-    cancelButton.addEventListener("click", function () {
+    cancelButton.classList.add("btn-secundario");
+    cancelButton.addEventListener("click", function() {
         showView("listado");
     });
-    form.appendChild(cancelButton);
+    acciones.appendChild(cancelButton);
 
     let submitButton = document.createElement("button");
     submitButton.type = "submit";
     submitButton.textContent = "Guardar";
-    form.appendChild(submitButton);
+    submitButton.classList.add("btn-primario");
+    acciones.appendChild(submitButton);
+
+    form.appendChild(acciones);
 
     return form;
 }
