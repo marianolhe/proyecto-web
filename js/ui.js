@@ -1,6 +1,6 @@
 import { showView } from "./router.js";
 
-function renderBookCard(book){
+function renderBookCard(book, mostrarFavorito = true){
         let tarjeta = document.createElement("div");
         tarjeta.classList.add("tarjeta");
 
@@ -36,6 +36,14 @@ function renderBookCard(book){
         boton.classList.add("btn-primario");
         boton.dataset.id = book.id;
         tarjeta.appendChild(boton);
+
+        if(mostrarFavorito) {
+            let botonFav = document.createElement("button");
+            botonFav.textContent = "Agregar a favoritos";
+            botonFav.classList.add("btn-favorito", "btn-secundario");
+            botonFav.dataset.id = book.id;
+            tarjeta.appendChild(botonFav);
+        }
 
         return tarjeta;
     }
@@ -222,4 +230,16 @@ function renderBookDetail(book) {
     showView("detalle");
 }
 
-export { renderBookCard, renderBookList, renderSkeleton, formularioLibro, renderBookDetail};
+function mostrarToast(mensaje, tipo = "exito") {
+    const toast = document.createElement("div");
+    toast.textContent = mensaje;
+    toast.classList.add("toast");
+    if (tipo === "error") {
+        toast.classList.add("toast-error");
+    }
+    document.body.appendChild(toast);
+    setTimeout(function() { toast.remove(); }, 3000);
+}
+
+
+export { renderBookCard, renderBookList, renderSkeleton, formularioLibro, renderBookDetail, mostrarToast};

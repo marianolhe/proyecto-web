@@ -107,21 +107,21 @@
   transform: translateY(-1px);
 }
  
-.btn-peligro {
+.tarjeta .btn-peligro {
   display: inline-flex;
   align-items: center;
   gap: var(--space-sm);
   padding: var(--space-sm) var(--space-lg);
   background-color: transparent;
-  color: var(--color-error);
   font-weight: 600;
   font-size: var(--font-size-sm);
   border: 1.5px solid var(--color-error);
   border-radius: var(--radius-sm);
   transition: background-color var(--transition);
+  color: var(--color-error);
 }
  
-.btn-peligro:hover {
+.tarjeta .btn-peligro:hover {
   background-color: rgba(235, 87, 87, 0.1);
 }
  
@@ -182,4 +182,29 @@
   background-size: 800px 100%;
   animation: shimmer 1.5s infinite linear;
 }
+
+.toast {
+  position: fixed;
+  bottom: var(--space-xl);
+  right: var(--space-xl);
+  background-color: var(--color-success);
+  color: var(--color-bg);
+  padding: var(--space-sm) var(--space-lg);
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+  box-shadow: var(--shadow-card);
+  z-index: 999;
+  animation: fadeIn 0.3s ease;
+}
+
+.toast-error {
+  background-color: var(--color-error);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
 

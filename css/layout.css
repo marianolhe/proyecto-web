@@ -49,6 +49,12 @@
   gap: var(--space-lg);
 }
 
+#view-favoritos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: var(--space-lg);
+}
+
 #view-detalle {
   max-width: 800px;
 }

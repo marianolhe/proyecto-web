@@ -1,6 +1,7 @@
 import { validateBook } from "./validation.js";
-import { createBook, getAllBooks, getBookById, updateBook, searchBooksbyGenre, searchBooksbyAuthor, searchBooksbyTitle} from "./api.js";
-import { formularioLibro, renderBookList, renderSkeleton} from "./ui.js";
+import { createBook, getAllBooks, getBookById, updateBook, searchBooksbyGenre, searchBooksbyAuthor, searchBooksbyTitle, addFavorite, getFavorites, removeFavorite} from "./api.js";
+import { formularioLibro, renderBookList, renderSkeleton, renderBookDetail, renderBookCard, mostrarToast} from "./ui.js";
+import { showView } from "./router.js"; 
 
 
 async function init() {
@@ -46,6 +47,7 @@ function setUpBookFormularioCrear(){
             })
             .catch(error => {
                 console.error("Error al crear el libro:", error);
+                mostrarToast("Error al crear el libro.");
             });
         }else{
             console.log("Errores de validación:", result.errors);
@@ -85,9 +87,11 @@ function setupFormularioEditar(book){
             updateBook(book.id, bookData)
             .then(updatedBook => {
                 console.log("Libro actualizado:", updatedBook);
+                mostrarToast("Libro actualizado correctamente.");
             })
             .catch(error => {
                 console.error("Error al actualizar el libro:", error);
+                mostrarToast("Error al actualizar el libro.");  
             });
         }else{
             console.log("Errores de validación:", result.errors);
@@ -171,7 +175,7 @@ function setupSearchBooks(){
 function setupVerDetalle() {
     const contenedor = document.getElementById("view-listado");
     contenedor.addEventListener("click", async function(event) {
-        const boton = event.target.closest("button[data-id]");
+        const boton = event.target.closest("btn-primario[data-id]");
         if (!boton) return;
  
         const id = boton.dataset.id;
@@ -183,8 +187,111 @@ function setupVerDetalle() {
         }
     });
 }
+
+function setupFavoritos() {
+    const contenedor = document.getElementById("view-listado");
+    
+    contenedor.addEventListener("click", function(event) {
+        if (event.target.classList.contains("btn-favorito")) {
+            const bookId = event.target.dataset.id;
+            getFavorites()
+            .then(favs => {
+                const yaExiste = favs.some(fav => fav.bookId === bookId);
+                if (yaExiste) {
+                    mostrarToast("Este libro ya está en favoritos.");
+                } else {
+                    addFavorite(bookId)
+                    .then(() => mostrarToast("Favorito agregado."))
+                    .catch(error => {
+                        console.error("Error al agregar favorito:", error);
+                        mostrarToast("Error al agregar favorito.");
+                    });
+                }
+            });
+        }
+    });
+} 
+
+function setupVistaFavoritos(){
+    showView("favoritos");
+    const contenedor = document.getElementById("view-favoritos");
+    contenedor.innerHTML = "";
+    
+    getFavorites()
+    .then(fav => {
+        const bookPromises = fav.map(fav => 
+            getBookById(fav.bookId).catch((error) => null));
+        return Promise.all(bookPromises)
+    .then(books => {
+        books.forEach((book, index) => {
+            if (!book) return; // Si no se pudo cargar el libro, lo omitimos
+            const tarjeta = renderBookCard(book, false);
+            let btnEliminar = document.createElement("button");
+            btnEliminar.textContent = "Eliminar de favoritos";
+            btnEliminar.classList.add("btn-peligro");
+            btnEliminar.addEventListener("click", function() {
+                removeFavorite(fav[index].id)
+                .then(() => {
+                    mostrarToast("Favorito eliminado.", "error");
+                    tarjeta.remove();
+                })
+                .catch(error => {
+                    console.error("Error al eliminar favorito:", error);
+                    mostrarToast("Error al eliminar favorito.");
+                });
+            });
+            tarjeta.appendChild(btnEliminar);
+            contenedor.appendChild(tarjeta);
+        });
+    })
+    .catch(error => {
+        console.error("Error al cargar favoritos:", error);
+    });
+})
+}
+
+
+function renderNavbar() {
+    const navbar = document.getElementById("navbar");
+
+    let logo = document.createElement("span");
+    logo.textContent = "Mar´s Book Blog";
+    logo.classList.add("navbar-logo");
+    navbar.appendChild(logo);
+
+    let acciones = document.createElement("div");
+    acciones.classList.add("navbar-acciones");
+    navbar.appendChild(acciones);
+
+    let btnInicio = document.createElement("button");
+    btnInicio.textContent = "Inicio";
+    btnInicio.classList.add("btn-secundario");
+    btnInicio.addEventListener("click", function() {
+        showView("listado");
+    });
+    acciones.appendChild(btnInicio);
+
+    let btnFavoritos = document.createElement("button");
+    btnFavoritos.textContent = "Favoritos";
+    btnFavoritos.classList.add("btn-secundario");
+    btnFavoritos.addEventListener("click", function() {
+        setupVistaFavoritos();
+    });
+    acciones.appendChild(btnFavoritos);
+
+    let btnCrear = document.createElement("button");
+    btnCrear.textContent = "Crear Libro";
+    btnCrear.classList.add("btn-primario");
+    btnCrear.addEventListener("click", function() {
+        showView("crear");
+    });
+    acciones.appendChild(btnCrear);
+}
+
     
 
 init();
+renderNavbar();
 setUpBookFormularioCrear();
 setupSearchBooks();
+setupFavoritos();
