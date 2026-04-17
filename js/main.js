@@ -356,6 +356,7 @@ function renderNavbar() {
     btnInicio.classList.add("btn-secundario");
     btnInicio.addEventListener("click", function() {
         showView("listado");
+        cargarPagina(1);
     });
     acciones.appendChild(btnInicio);
 
