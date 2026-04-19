@@ -87,3 +87,4 @@ proyecto-blog/
 ## 🔗 Deploy
 
 URL en producción: https://marianolhe.github.io/proyecto-web/
+URL del video> https://drive.google.com/drive/folders/1pWThyY6ubE0dc45rM8HdHhUYcCuXMl4R?usp=sharing
