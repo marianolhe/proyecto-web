@@ -1,15 +1,56 @@
 import { validateBook } from "./validation.js";
-import { createBook, deleteBook, getAllBooks, getBookById, updateBook, searchBooksbyGenre, searchBooksbyAuthor, searchBooksbyTitle, addFavorite, getFavorites, removeFavorite} from "./api.js";
+import { createBook, deleteBook, getAllBooks, getBooksPaged, getBookById, updateBook, searchBooksbyGenre, searchBooksbyAuthor, searchBooksbyTitle, addFavorite, getFavorites, removeFavorite} from "./api.js";
 import { formularioLibro, renderBookList, renderSkeleton, renderBookDetail, renderBookCard, showToast, showError, clearErrors} from "./ui.js";
 import { showView } from "./router.js"; 
 
+const LIMIT = 10;
+
+let currentPage = 1;
+
+async function cargarPagina(pagina) {
+    renderSkeleton();
+    try {
+        const books = await getBooksPaged(pagina, LIMIT);
+        renderBookList(books);
+        setupVerDetalle();
+        currentPage = pagina;
+        actualizarPaginacion(books.length);
+    } catch (error) {
+        const contenedor = document.getElementById("view-listado");
+        contenedor.innerHTML = "";
+        const p = document.createElement("p");
+        p.textContent = "Ocurrió un error al cargar los libros.";
+        contenedor.appendChild(p);
+    }
+}
+
+function actualizarPaginacion(cantLibros) {
+    const paginacion = document.getElementById("paginacion");
+    const btnAnterior = document.getElementById("btn-anterior");
+    const btnSiguiente = document.getElementById("btn-siguiente");
+    const paginaActual = document.getElementById("pagina-actual");
+    paginacion.classList.remove("hidden");
+    paginaActual.textContent = "Página " + currentPage;
+    btnAnterior.disabled = currentPage === 1;
+    btnSiguiente.disabled = cantLibros < LIMIT;
+}
+
+function setupPaginacion() {
+    document.getElementById("btn-anterior").addEventListener("click", function() {
+        if (currentPage > 1) cargarPagina(currentPage - 1);
+    });
+    document.getElementById("btn-siguiente").addEventListener("click", function() {
+        cargarPagina(currentPage + 1);
+    });
+}
 
 async function init() {
     renderSkeleton();
     try {
-        const books = await getAllBooks();
+        const books = await getBooksPaged(1, LIMIT);
         renderBookList(books);
         setupVerDetalle();
+        actualizarPaginacion(books.length);
     } catch (error) {
         console.error("Error al cargar los libros:", error);
         const contenedor = document.getElementById("view-listado");
@@ -46,6 +87,7 @@ function setUpBookFormularioCrear(){
                 form.reset();
                 showToast("Libro creado correctamente", "exito");
                 showView("listado");
+                cargarPagina(currentPage);
             })
             .catch(error => {
                 showToast("Error al crear el libro. Intentá de nuevo.", "error");
@@ -95,7 +137,8 @@ function setupFormularioEditar(book){
             updateBook(book.id, bookData)
             .then(updatedBook => {
                 showToast("Libro actualizado correctamente", "exito");
-                showView("listado")
+                showView("listado");
+                cargarPagina(currentPage);
             })
             .catch(error => {
                 showToast("Error al actualizar el libro. Intentá de nuevo.", "error");
@@ -126,6 +169,7 @@ function setupEliminar(book) {
             if (card) card.closest(".tarjeta").remove();
             showToast("Libro eliminado correctamente", "exito");
             showView("listado");
+            cargarPagina(currentPage);
         } catch (error) {
             showToast("Error al eliminar el libro. Intentá de nuevo.", "error");
         }
@@ -312,6 +356,7 @@ function renderNavbar() {
     btnInicio.classList.add("btn-secundario");
     btnInicio.addEventListener("click", function() {
         showView("listado");
+        cargarPagina(1);
     });
     acciones.appendChild(btnInicio);
 
@@ -339,3 +384,4 @@ renderNavbar();
 setUpBookFormularioCrear();
 setupSearchBooks();
 setupFavoritos();
+setupPaginacion();
