@@ -79,10 +79,11 @@ proyecto-blog/
 
 ## 📸 Screenshot 
 
-*
+<img width="1470" height="956" alt="Captura de pantalla 2026-04-18 a la(s) 10 27 52 p  m" src="https://github.com/user-attachments/assets/3b70710c-74ed-4777-8975-99894aa7fbed" />
+
 
 ---
 
 ## 🔗 Deploy
 
-URL en producción: 
+URL en producción: https://marianolhe.github.io/proyecto-web/
